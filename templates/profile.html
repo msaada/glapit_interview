@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block body %}
+{% block content %}
+
+{% if user %}
+{% for account in user.socialaccount_set.all %}
+
+<div class="container">
+  <div class="row">
+
+    <div class="col-sm-6 col-md-4 col-lg4">
+      <p class="sticky taped2" style="width: 250px;">
+        <strong>Welcome {{ user.first_name }}!</strong><br>
+        At this point, the site has<br />
+        authenticated you and, retrieved<br />
+        your 100 last emails.
+      </p>
+      <p><a class="btn btn-lg btn-default" href="http://127.0.0.1:8000/accounts/logout" role="button">Logout</a></p>
+    </div>
+    <div class="col-sm-6 col-md-4 col-lg-4">
+      <h3>Profile</h3>
+      <ul class="list-unstyled">
+        <li>First name: <strong>{{account.extra_data.given_name}}</strong></li>
+        <li>Last name: <strong>{{account.extra_data.family_name}}</strong></li>
+      </ul>
+    </div>
+    <div class="col-sm-6 col-md-4 col-lg-4">
+      <h3>Picture</h3>
+      <p class="picture-frame">
+      {% if account.get_avatar_url %}<img alt="" src="{{account.get_avatar_url}}" style="width: 20em; height: 20em">
+      {% else %}No picture available yet.{% endif %}
+      </p>
+    </div>
+  </div>
+</div>
+    {% endfor %}
+{% endif %}
+
+<table class="table table-stripped my-table center">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Snippet</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for mail in mails %}
+      <tr>
+        <td>{{ mail.mailId }}</td>
+        <td>{{ mail.snippet }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if mails.has_other_pages %}
+
+
+
+<div class="text-center">
+  <ul class="pagination nav">
+    {% if mails.has_previous %}
+      <li><a href="?page={{ mails.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in mails.paginator.page_range %}
+      {% if mails.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if mails.has_next %}
+      <li><a href="?page={{ mails.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+</div>
+{% endif %}
+{% endblock content %}
+{% endblock body %}

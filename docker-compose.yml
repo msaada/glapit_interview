@@ -1,0 +1,46 @@
+version: '2'
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - migration
+    links:
+      - migration
+
+  migration:
+    build: .
+    command: python manage.py migrate
+    volumes:
+      - .:/code
+    depends_on:
+      - makemigrations
+    links:
+      - makemigrations
+  makemigrations:
+      build: .
+      command: python manage.py makemigrations mail
+      volumes:
+        - .:/code
+      depends_on:
+        - delldb
+      links:
+        - delldb
+  delldb:
+    build: .
+    command: rm -rf db.sqlite3
+    volumes:
+      - .:/code
+    depends_on:
+      - delmigrations
+    links:
+      - delmigrations
+  delmigrations:
+    build: .
+    command: rm -rf mail/migrations
+    volumes:
+      - .:/code
