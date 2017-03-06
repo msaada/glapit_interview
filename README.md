@@ -6,6 +6,7 @@ This project is based on:
 - Django allauth demo
 - Bootstrap
 - Docker
+- Python 3.4
 
 # USAGE
 
